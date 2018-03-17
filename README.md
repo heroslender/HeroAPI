@@ -2,10 +2,10 @@
 <img src="/logo.jpg" alt="heroslender"/>
 </div>
 
-## HeroAPI
+# HeroAPI
 Conjunto de APIs para facilitar o desenvolvimento dos teus plugins na API Bukkit.\
 Estas APIs podem ser usadas em separado ou em conjunto.
-#### API de ItemStack
+### API de ItemStack
 Esta API é para facilitar a criação de ItemStack com ItemMeta, por exemplo displayName ou lore.
 Para visualizar esta API [clique aqui](https://github.com/heroslender/HeroAPI/tree/master/src/main/java/com/heroslender/Menu).
 
@@ -13,7 +13,7 @@ Exemplo:
 ```Java
 ItemStack itemExemplo = new HItem(Material.SKULL_ITEM, "§cNome da skull", "Lore linha 1", "Lore linha 2");
 ```
-#### API de Menu
+### API de Menu
 API para facilitar a criação de menus GUI.
 Pode visualizar esta API [clicando aqui](https://github.com/heroslender/HeroAPI/tree/master/src/main/java/com/heroslender/Menu).
 
