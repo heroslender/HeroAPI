@@ -1,18 +1,29 @@
 package com.heroslender.Menu;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 public class Menu {
-
     private final String nome;
     private MenuItem[] items;
+
+    public static void registar(Plugin plugin) {
+        Bukkit.getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            private void onInvClick(InventoryClickEvent e) {
+                if (!e.isCancelled() && e.getInventory().getHolder() instanceof MenuHolder)
+                    ((MenuHolder) e.getInventory().getHolder()).getMenu().inventoryClick(e);
+            }
+        }, plugin);
+    }
 
     public Menu(String nome, int tamanho) {
         this.nome = nome;
@@ -22,10 +33,6 @@ public class Menu {
     public Menu(String nome, MenuSize tamanho) {
         this.nome = nome;
         items = new MenuItem[tamanho.getSlots()];
-    }
-
-    public void setItem(int slot, MenuItem menuItem) {
-        items[slot] = menuItem;
     }
 
     protected void setItem(int slot, ItemStack itemStack) {
@@ -51,10 +58,10 @@ public class Menu {
         player.openInventory(inventory);
     }
 
-    public void inventoryClick(InventoryClickEvent e) {
+    private void inventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
         int slot = e.getRawSlot();
-        if (slot < items.length && items[slot] != null)
+        if (slot > 0 && slot < items.length && items[slot] != null)
             items[slot].onClick(e);
     }
 
@@ -81,20 +88,43 @@ public class Menu {
         void onClick(InventoryClickEvent e);
     }
 
-    @AllArgsConstructor
-    public class MenuItem {
-        @Getter
+    private class MenuItem {
         private final ItemStack icon;
         private final MenuItemClick itemClick;
 
-        public MenuItem(ItemStack icon) {
+        MenuItem(ItemStack icon, MenuItemClick itemClick) {
             this.icon = icon;
-            itemClick = null;
+            this.itemClick = itemClick;
         }
 
         void onClick(InventoryClickEvent e) {
             if (itemClick != null)
                 itemClick.onClick(e);
+        }
+
+        ItemStack getIcon() {
+            return icon;
+        }
+    }
+
+    private class MenuHolder implements InventoryHolder {
+        private final Menu menu;
+        private Inventory inventory;
+
+        MenuHolder(Menu menu) {
+            this.menu = menu;
+        }
+
+        Menu getMenu() {
+            return menu;
+        }
+
+        public Inventory getInventory() {
+            return this.inventory;
+        }
+
+        void setInventory(Inventory inventory) {
+            this.inventory = inventory;
         }
     }
 }
