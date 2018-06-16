@@ -7,7 +7,7 @@ Conjunto de APIs para facilitar o desenvolvimento dos teus plugins na API Bukkit
 Estas APIs podem ser usadas em separado ou em conjunto.
 ## API de ItemStack
 Esta API é para facilitar a criação de ItemStack com ItemMeta, por exemplo displayName ou lore.
-Para visualizar esta API [clique aqui](https://github.com/heroslender/HeroAPI/tree/master/src/main/java/com/heroslender/Menu).
+Para visualizar esta API [clique aqui](https://github.com/heroslender/HeroAPI/tree/master/src/main/java/com/heroslender/ItemStack).
 
 Exemplo:
 ```Java
