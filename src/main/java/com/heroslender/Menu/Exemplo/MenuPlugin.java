@@ -1,9 +1,11 @@
 package com.heroslender.Menu.Exemplo;
 
 import com.heroslender.Menu.Menu;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 class MenuPlugin extends JavaPlugin {
@@ -11,7 +13,7 @@ class MenuPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         // Registar o Listener do menu - IMPORTANTE
-        Menu.registar(this);
+        Menu.register(this);
     }
 
     @Override
@@ -25,5 +27,23 @@ class MenuPlugin extends JavaPlugin {
 
         player.sendMessage("Abriste o menu de exemplo.");
         return true;
+    }
+
+    public void abrirMenuExemplo2(Player player){
+        // Inicializar o menu
+        Menu menu = new Menu("Menu exemplo 2", Menu.MenuSize.THREE_LINES);
+
+        // Definir o conteudo
+        menu.setItem(11, new ItemStack(Material.BEDROCK), menuClick -> menuClick.getWhoClicked().sendMessage("Clicas-te na Bedrock!"));
+        menu.setItem(13, new ItemStack(Material.DIAMOND));
+        menu.setItem(15, new ItemStack(Material.APPLE), menuClick -> {
+            menuClick.getWhoClicked().sendMessage("Clicas-te na maça!");
+
+            menuClick.getWhoClicked().closeInventory();
+            menuClick.getWhoClicked().getInventory().addItem(new ItemStack(Material.APPLE));
+        });
+
+        // Abrir o menu para o Player
+        menu.open(player);
     }
 }

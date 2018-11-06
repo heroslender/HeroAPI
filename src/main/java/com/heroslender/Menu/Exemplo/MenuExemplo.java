@@ -11,7 +11,7 @@ public class MenuExemplo extends Menu {
         Defenir o nome do menu, e o tamanho
         O tamanho tb pode ser Int, para um numero de slots costumizado
          */
-        super("§aMenu de §eExemplo", MenuSize.TRES_LINHAS);
+        super("§aMenu de §eExemplo", MenuSize.THREE_LINES);
 
         // Item clicavel
         setItem(13, new ItemStack(Material.SKULL_ITEM), clickEvent -> {
