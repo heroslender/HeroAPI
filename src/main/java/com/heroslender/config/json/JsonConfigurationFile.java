@@ -63,7 +63,7 @@ class JsonConfigurationFile {
     private void loadFile() throws IOException {
         File parent = configFile.getParentFile();
         if (!parent.exists()) {
-            if (!parent.createNewFile()) {
+            if (!parent.mkdirs()) {
                 log(Level.SEVERE, "Ocurreu um erro ao criar a config!");
                 return;
             }
