@@ -70,10 +70,17 @@ class JsonConfigurationFile {
         }
         if (!configFile.exists()) {
             log(Level.WARNING, "A config \"" + configFile.getName() + "\" não foi encontrada, a criar uma nova...");
-            if (configFile.createNewFile())
-                log("A config foi criada com sucesso!");
-            else
-                log(Level.SEVERE, "Ocurreu um erro ao criar a config!");
+
+            try {
+                // Save the config file if found inside the jar
+                plugin.saveResource(configFile.getName(), false);
+            } catch (IllegalArgumentException e) {
+                // File not found in resources, creating a blank one
+                if (configFile.createNewFile())
+                    log("A config foi criada com sucesso!");
+                else
+                    log(Level.SEVERE, "Ocurreu um erro ao criar a config!");
+            }
         }
     }
 
