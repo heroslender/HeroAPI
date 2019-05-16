@@ -39,7 +39,7 @@ class JsonConfigurationFile {
             loadFile();
             loadConfig();
         } catch (Exception e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Ocurreu um erro ao carregar a configuração!", e);
         }
     }
 
@@ -48,7 +48,7 @@ class JsonConfigurationFile {
             loadFile();
             loadConfig();
         } catch (Exception e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Ocurreu um erro ao recarregar a configuração!", e);
         }
     }
 
@@ -56,7 +56,7 @@ class JsonConfigurationFile {
         try (Writer writer = new FileWriter(configFile)) {
             gson.toJson(config, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Ocurreu um erro ao guardar a configuração!", e);
         }
     }
 
@@ -64,12 +64,12 @@ class JsonConfigurationFile {
         File parent = configFile.getParentFile();
         if (!parent.exists()) {
             if (!parent.mkdirs()) {
-                log(Level.SEVERE, "Ocurreu um erro ao criar a config!");
+                log(Level.SEVERE, "Ocurreu um erro ao criar a configuração!");
                 return;
             }
         }
         if (!configFile.exists()) {
-            log(Level.WARNING, "A config \"" + configFile.getName() + "\" não foi encontrada, a criar uma nova...");
+            log(Level.WARNING, "A configuração \"" + configFile.getName() + "\" não foi encontrada, a criar uma nova...");
 
             try {
                 // Save the config file if found inside the jar
@@ -77,9 +77,9 @@ class JsonConfigurationFile {
             } catch (IllegalArgumentException e) {
                 // File not found in resources, creating a blank one
                 if (configFile.createNewFile())
-                    log("A config foi criada com sucesso!");
+                    log("A configuração foi criada com sucesso!");
                 else
-                    log(Level.SEVERE, "Ocurreu um erro ao criar a config!");
+                    log(Level.SEVERE, "Ocurreu um erro ao criar a configuração!");
             }
         }
     }
@@ -97,6 +97,6 @@ class JsonConfigurationFile {
     }
 
     private void log(Level logLevel, String msg) {
-        plugin.getLogger().log(logLevel, "[JsonConfiguration] " + msg);
+        plugin.getLogger().log(logLevel, "[JsonConfiguration] {0}", msg);
     }
 }
