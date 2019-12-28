@@ -107,7 +107,7 @@ public class Menu {
     private void inventoryClick(InventoryClickEvent e) {
         e.setCancelled(true);
         int slot = e.getRawSlot();
-        if (slot > 0 && slot < items.length && items[slot] != null)
+        if (slot >= 0 && slot < items.length && items[slot] != null)
             items[slot].onClick(e);
     }
 
