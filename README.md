@@ -1,6 +1,4 @@
-<div align="center">
-<img src="/logo.jpg" alt="heroslender"/>
-</div>
+<img src="https://github.com/heroslender.png" alt="Heroslender" title="Heroslender" align="right" height="96" width="96"/>
 
 # HeroAPI
 Conjunto de APIs para facilitar o desenvolvimento dos teus plugins na API Bukkit.\
@@ -31,4 +29,9 @@ public class MenuExemplo extends Menu {
         setItem(15, new ItemStack(Material.PAPER));
     }
 }
+```
+
+Uso:
+```Java
+new MenuExemplo().open(player);
 ```
