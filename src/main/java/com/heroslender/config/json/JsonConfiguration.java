@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class JsonConfiguration extends JsonConfigurationFile {
 
@@ -108,47 +109,29 @@ public class JsonConfiguration extends JsonConfigurationFile {
         if (!contains(path)) set(path, value);
     }
 
-    public boolean set(String path, Object value) {
-        try {
-            if (path.contains(".")) {
-                String[] subPaths = path.split("\\.");
-                JsonObject[] jObjts = new JsonObject[subPaths.length - 1];
+    public void set(String path, Object value) {
+        if (!path.contains(".")) {
+            set(config, path, value);
+            return;
+        }
 
-                for (int i = 0; i < subPaths.length; i++) {
-                    String p = subPaths[i];
-                    // Verificar se ja ta na ultima section
-                    if (i == subPaths.length - 1) {
-                        return set(jObjts[i - 1], p, value);
-                    }
-
-                    // Verificar se é a primeira section para definir os defaults
-                    if (i == 0) {
-                        if (!contains(p)) {
-                            JsonObject first = new JsonObject();
-                            config.add(p, first);
-                            jObjts[i] = first;
-                            continue;
-                        }
-                        jObjts[i] = config.getAsJsonObject(p);
-                        continue;
-                    }
-                    // Resto da gambiarra :D
-                    JsonObject last = jObjts[i - 1];
-
-                    if (!last.has(p)) {
-                        JsonObject f = new JsonObject();
-                        last.add(p, f);
-                        jObjts[i] = f;
-                        continue;
-                    }
-                    jObjts[i] = last.getAsJsonObject(p);
-                }
-                return true;
+        String[] subPaths = path.split("\\.");
+        JsonObject prev = config;
+        for (int i = 0; i < subPaths.length; i++) {
+            String sectionName = subPaths[i];
+            if (i == subPaths.length - 1) {
+                set(prev, sectionName, value);
+                return;
             }
-            return set(config, path, value);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+
+            if (!prev.has(sectionName)) {
+                JsonObject section = new JsonObject();
+                prev.add(sectionName, section);
+                prev = section;
+                continue;
+            }
+
+            prev = prev.getAsJsonObject(sectionName);
         }
     }
 
@@ -160,50 +143,27 @@ public class JsonConfiguration extends JsonConfigurationFile {
 
     public boolean contains(String path) {
         try {
-            if (path.contains(".")) {
-                String[] subPaths = path.split("\\.");
-                JsonElement subPath = null;
-                for (String p : subPaths) {
-                    // pegar o primeiro elemento
-                    if (subPath == null) {
-                        if (!contains(p)) return false;
-                        subPath = get(p);
-                        continue;
-                    }
-
-                    JsonObject jObject = subPath.getAsJsonObject();
-                    if (!jObject.has(p)) return false;
-
-                    subPath = jObject.get(p);
-                }
-                return true;
-            }
-            return config.has(path);
+            return get(path) != null;
         } catch (Exception e) {
             return false;
         }
     }
 
     private JsonElement get(String path) {
-        if (path.contains(".")) {
-            String[] subPaths = path.split("\\.");
-            JsonElement subPath = null;
-            for (String p : subPaths) {
-                // pegar o primeiro elemento
-                if (subPath == null) {
-                    if (!contains(p)) return null;
-                    subPath = get(p);
-                    continue;
-                }
+        if (!path.contains(".")) return config.get(path);
 
-                JsonObject jObject = subPath.getAsJsonObject();
-                if (!jObject.has(p)) return null;
+        StringTokenizer tokenizer = new StringTokenizer(path, ".");
+        JsonElement prev = config;
+        while (tokenizer.hasMoreTokens()) {
+            if (!(prev instanceof JsonObject)) return null;
 
-                subPath = jObject.get(p);
-            }
-            return subPath;
+            JsonObject prevObj = prev.getAsJsonObject();
+            String subPath = tokenizer.nextToken();
+            if (!prevObj.has(subPath)) return null;
+
+            prev = prevObj.get(subPath);
         }
 
-        return config.get(path);
+        return prev;
     }
 }
