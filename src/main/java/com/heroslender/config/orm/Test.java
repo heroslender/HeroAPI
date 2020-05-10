@@ -7,7 +7,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Test {
     public static void main(String[] args) throws IOException, InvalidConfigurationException {
@@ -18,7 +21,7 @@ public class Test {
         YamlConfiguration config = new YamlConfiguration();
         config.load(configFile);
 
-        Config cfg = BukkitConfigurationLoader.load(config, () -> {
+        BukkitConfigurationLoader<Config> configurationLoader = new BukkitConfigurationLoader(config, () -> {
             try {
                 config.save(configFile);
             } catch (IOException e) {
@@ -26,7 +29,14 @@ public class Test {
             }
         }, Config.class);
 
-        System.out.println(cfg.toString());
+        Config cfg = configurationLoader.load();
+        System.out.printf("Name before update: '%s'%n", cfg.name);
+
+        cfg.name = "Unknown";
+        configurationLoader.save(cfg);
+
+        cfg = configurationLoader.load();
+        System.out.printf("Name after update: '%s'%n", cfg.name);
     }
 
     public static class Config {
@@ -38,7 +48,15 @@ public class Test {
 
         public InnerConfig inner;
 
+        Map<String, String> someMap = new HashMap<>();
+        Map<String, InnerConfig> someMapOfObjects = new HashMap<>();
+
         public Config() {
+            someMap.put("Hello", "World");
+            someMap.put("Hello2", "World2");
+
+            someMapOfObjects.put("First", new InnerConfig("Bruno", 21));
+            someMapOfObjects.put("Second", new InnerConfig("Heroslender", -1));
         }
 
         @Override
@@ -48,8 +66,10 @@ public class Test {
                     ", age=" + age +
                     ", emptyNames=" + emptyNames +
                     ", names=" + names +
-                    ", inner=" + inner +
-                    '}';
+                    ", \ninner=" + inner +
+                    ", \nsomeMap=" + someMap +
+                    ", \nsomeMapOfObjects=" + someMapOfObjects +
+                    "\n}";
         }
 
         public static class InnerConfig {

@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,13 +37,17 @@ public class ListTypeAdapter implements BukkitTypeAdapter<List> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List get(ConfigurationSection configurationSection, String path, Field field) {
-        ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
-        Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
+    public List get(ConfigurationSection configurationSection, String path, Type type) {
+        if (!(type instanceof ParameterizedType)) {
+            throw new IllegalArgumentException("List without entry type?!?");
+        }
 
-        TypeAdapter<?> adapter = BukkitTypeAdapterFactory.INSTANCE.getTypeAdapter(type);
+        ParameterizedType stringListType = (ParameterizedType) type;
+        Class<?> entryType = (Class<?>) stringListType.getActualTypeArguments()[0];
+
+        TypeAdapter<?> adapter = BukkitTypeAdapterFactory.INSTANCE.getTypeAdapter(entryType);
         if (adapter == null) {
-            System.out.println("No adapter found for " + type.getSimpleName());
+            System.out.println("No adapter found for " + entryType.getSimpleName());
             return Collections.emptyList();
         }
 
@@ -59,6 +64,6 @@ public class ListTypeAdapter implements BukkitTypeAdapter<List> {
             defaultValue = Collections.emptyList();
         }
 
-        configuration.set(path, defaultValue);
+        save(configuration, path, defaultValue);
     }
 }

@@ -34,7 +34,7 @@ public class PrimitiveTypeAdapters {
         @Override
         public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
             defaultValue = defaultValue != null ? defaultValue : 0;
-            configuration.set(path, defaultValue);
+            save(configuration, path, defaultValue);
         }
     }
 
@@ -52,7 +52,7 @@ public class PrimitiveTypeAdapters {
         @Override
         public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
             defaultValue = defaultValue != null ? defaultValue : 0L;
-            configuration.set(path, defaultValue);
+            save(configuration, path, defaultValue);
         }
     }
 
@@ -70,7 +70,7 @@ public class PrimitiveTypeAdapters {
         @Override
         public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
             defaultValue = defaultValue != null ? defaultValue : 0D;
-            configuration.set(path, defaultValue);
+            save(configuration, path, defaultValue);
         }
     }
 
@@ -88,7 +88,7 @@ public class PrimitiveTypeAdapters {
         @Override
         public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
             defaultValue = defaultValue != null ? defaultValue : 0F;
-            configuration.set(path, defaultValue);
+            save(configuration, path, defaultValue);
         }
     }
 
@@ -106,7 +106,7 @@ public class PrimitiveTypeAdapters {
         @Override
         public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
             defaultValue = defaultValue != null ? defaultValue : false;
-            configuration.set(path, defaultValue);
+            save(configuration, path, defaultValue);
         }
     }
 
@@ -124,7 +124,7 @@ public class PrimitiveTypeAdapters {
         @Override
         public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
             defaultValue = defaultValue != null ? defaultValue : "";
-            configuration.set(path, defaultValue);
+            save(configuration, path, defaultValue);
         }
     }
 }

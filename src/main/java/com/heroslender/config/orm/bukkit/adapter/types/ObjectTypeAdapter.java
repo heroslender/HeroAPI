@@ -5,6 +5,7 @@ import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapter;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Collections;
 
 @SuppressWarnings("rawtypes")
@@ -26,31 +27,34 @@ public class ObjectTypeAdapter implements BukkitTypeAdapter<Object> {
     }
 
     @Override
-    public Object get(ConfigurationSection configurationSection, String path, Field field) {
+    public Object get(ConfigurationSection configurationSection, String path, Type type) {
         return BukkitConfigurationLoader.load(
                 configurationSection.getConfigurationSection(path),
                 null,
-                field.getType()
+                (Class<?>) type
         );
     }
 
     @Override
-    public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue, Field field) {
+    public void save(ConfigurationSection configuration, String path, Object defaultValue, Type type) {
+        ConfigurationSection section = configuration.createSection(path);
+
+        new BukkitConfigurationLoader(section, null, (Class<?>) type).save(defaultValue);
+    }
+
+    @Override
+    public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue, Type type) {
         configuration.createSection(path);
 
         if (defaultValue == null) {
-            try {
-                defaultValue = BukkitConfigurationLoader.load(
-                        configuration.getConfigurationSection(path),
-                        null,
-                        field.getType()
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            BukkitConfigurationLoader.load(
+                    configuration.getConfigurationSection(path),
+                    null,
+                    (Class<?>) type
+            );
+        } else {
+            save(configuration, path, defaultValue, type);
         }
-
-        configuration.set(path, defaultValue);
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.logging.Level;
 public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, ConfigurationSection> {
     private static final BukkitTypeAdapterFactory TYPE_ADAPTER_FACTORY = BukkitTypeAdapterFactory.INSTANCE;
 
-    protected BukkitConfigurationLoader(@NotNull ConfigurationSection config, Runnable saveConfig, @NotNull Class<T> clazz) {
+    public BukkitConfigurationLoader(@NotNull ConfigurationSection config, Runnable saveConfig, @NotNull Class<T> clazz) {
         super(config, saveConfig, clazz);
     }
 
@@ -60,29 +60,29 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     public Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue) {
         final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
         if (typeAdapter == null) {
-            System.out.println("None found!");
-            System.out.println(field.getType());
-            // No adapter was found, best shot, it's a sub-section X)
-            if (!getConfig().isSet(valuePath)) {
-                getLogger().log(Level.INFO, "The section {0} is not present in the config, creating it.", valuePath);
-                getConfig().createSection(valuePath);
-            }
-
-            return new BukkitConfigurationLoader<>(
-                    getConfig().getConfigurationSection(valuePath),
-                    getSaveConfig(),
-                    field.getType()
-            ).load();
+            System.out.println("No adapter found!");
+            return null;
         }
 
         if (!getConfig().isSet(valuePath)) {
             getLogger().log(Level.INFO, "The field {0} is not present in the config, creating it.", valuePath);
-            typeAdapter.saveDefault(getConfig(), valuePath, defaultValue);
+            typeAdapter.saveDefault(getConfig(), valuePath, defaultValue, field.getGenericType());
             if (getSaveConfig() != null) {
                 getSaveConfig().run();
             }
         }
 
-        return typeAdapter.get(getConfig(), valuePath, field);
+        return typeAdapter.get(getConfig(), valuePath, field.getGenericType());
+    }
+
+    @Override
+    public void setConfigValue(Field field, String valuePath, @Nullable Object value) {
+        final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
+        if (typeAdapter == null) {
+            System.out.println("No adapter found!");
+            return;
+        }
+
+        typeAdapter.save(getConfig(), valuePath, value, field.getGenericType());
     }
 }

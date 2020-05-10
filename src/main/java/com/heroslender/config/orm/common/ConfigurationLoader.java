@@ -22,6 +22,20 @@ public abstract class ConfigurationLoader<T, C> {
         this.clazz = clazz;
     }
 
+    public void save(@NotNull Object instance) {
+        for (Field field : clazz.getDeclaredFields()) {
+            try {
+                saveField(field, instance);
+            } catch (IllegalAccessException e) {
+                logger.log(Level.SEVERE, e, () -> "Failed to initialize the field " + field.getName());
+            }
+        }
+
+        if (getSaveConfig() != null) {
+            getSaveConfig().run();
+        }
+    }
+
     public T load() {
         final T instance = initClass(clazz);
         if (instance == null) {
@@ -39,6 +53,14 @@ public abstract class ConfigurationLoader<T, C> {
         return instance;
     }
 
+    protected void saveField(@NotNull final Field field, @NotNull final Object instance) throws IllegalAccessException {
+        field.setAccessible(true);
+
+        final String configFieldName = field.getName();
+
+        setConfigValue(field, configFieldName, field.get(instance));
+    }
+
     protected void loadField(@NotNull final Field field, @NotNull final Object instance) throws IllegalAccessException {
         field.setAccessible(true);
 
@@ -51,6 +73,8 @@ public abstract class ConfigurationLoader<T, C> {
     }
 
     public abstract Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue);
+
+    public abstract void setConfigValue(Field field, String valuePath, @Nullable Object value);
 
     @Nullable
     protected T initClass(@NotNull Class<T> clazz) {
