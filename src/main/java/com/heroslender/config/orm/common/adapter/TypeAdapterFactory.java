@@ -9,9 +9,7 @@ public interface TypeAdapterFactory<C extends TypeAdapter<?>> {
 
     default <T> C getTypeAdapter(Class<T> type) {
         for (C adapter : getAdapterList()) {
-            System.out.println(adapter.getType().getSimpleName() + " - " + type.getSimpleName() + " - " + ClassUtils.isAssignable(adapter.getType(), type, true));
-
-            if (ClassUtils.isAssignable(adapter.getType(), type, true)) {
+            if (ClassUtils.isAssignable(type, adapter.getType(), true)) {
                 return adapter;
             }
         }

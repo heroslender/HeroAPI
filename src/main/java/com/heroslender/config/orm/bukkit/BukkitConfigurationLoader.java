@@ -15,7 +15,7 @@ import java.util.logging.Level;
 public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, ConfigurationSection> {
     private static final BukkitTypeAdapterFactory TYPE_ADAPTER_FACTORY = BukkitTypeAdapterFactory.INSTANCE;
 
-    protected BukkitConfigurationLoader(@NotNull ConfigurationSection config, @NotNull Runnable saveConfig, @NotNull Class<T> clazz) {
+    protected BukkitConfigurationLoader(@NotNull ConfigurationSection config, Runnable saveConfig, @NotNull Class<T> clazz) {
         super(config, saveConfig, clazz);
     }
 
@@ -48,9 +48,8 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     }
 
     @Nullable
-    public static <T> T load(@NotNull ConfigurationSection config, @NotNull Runnable saveConfig, @NotNull Class<T> clazz) {
+    public static <T> T load(@NotNull ConfigurationSection config, Runnable saveConfig, @NotNull Class<T> clazz) {
         Objects.requireNonNull(config, "config is null");
-        Objects.requireNonNull(saveConfig, "saveConfig is null");
         Objects.requireNonNull(clazz, "clazz is null");
 
         final ConfigurationLoader<T, ConfigurationSection> loader = new BukkitConfigurationLoader<>(config, saveConfig, clazz);
@@ -61,6 +60,8 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     public Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue) {
         final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
         if (typeAdapter == null) {
+            System.out.println("None found!");
+            System.out.println(field.getType());
             // No adapter was found, best shot, it's a sub-section X)
             if (!getConfig().isSet(valuePath)) {
                 getLogger().log(Level.INFO, "The section {0} is not present in the config, creating it.", valuePath);
@@ -77,7 +78,9 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
         if (!getConfig().isSet(valuePath)) {
             getLogger().log(Level.INFO, "The field {0} is not present in the config, creating it.", valuePath);
             typeAdapter.saveDefault(getConfig(), valuePath, defaultValue);
-            getSaveConfig().run();
+            if (getSaveConfig() != null) {
+                getSaveConfig().run();
+            }
         }
 
         return typeAdapter.get(getConfig(), valuePath, field);

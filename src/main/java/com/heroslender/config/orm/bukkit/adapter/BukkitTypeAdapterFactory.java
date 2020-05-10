@@ -2,6 +2,7 @@ package com.heroslender.config.orm.bukkit.adapter;
 
 import com.google.common.collect.Lists;
 import com.heroslender.config.orm.bukkit.adapter.types.ListTypeAdapter;
+import com.heroslender.config.orm.bukkit.adapter.types.ObjectTypeAdapter;
 import com.heroslender.config.orm.bukkit.adapter.types.PrimitiveTypeAdapters;
 import com.heroslender.config.orm.common.adapter.TypeAdapterFactory;
 
@@ -20,6 +21,8 @@ public class BukkitTypeAdapterFactory implements TypeAdapterFactory<BukkitTypeAd
             adapterList = Lists.newArrayList();
             adapterList.addAll(PrimitiveTypeAdapters.PRIMITIVE_ADAPTERS);
             adapterList.add(ListTypeAdapter.INSTANCE);
+
+            adapterList.add(ObjectTypeAdapter.INSTANCE);
         }
 
         return adapterList;

@@ -26,7 +26,7 @@ public class Test {
             }
         }, Config.class);
 
-        System.out.println(cfg);
+        System.out.println(cfg.toString());
     }
 
     public static class Config {
@@ -41,11 +41,35 @@ public class Test {
         public Config() {
         }
 
+        @Override
+        public String toString() {
+            return "Config{" +
+                    "name='" + name + '\'' +
+                    ", age=" + age +
+                    ", emptyNames=" + emptyNames +
+                    ", names=" + names +
+                    ", inner=" + inner +
+                    '}';
+        }
+
         public static class InnerConfig {
             public String nameWithDefault = "Bruno";
             public int ageWithDefault = 21;
 
             public InnerConfig() {
+            }
+
+            public InnerConfig(String nameWithDefault, int ageWithDefault) {
+                this.nameWithDefault = nameWithDefault;
+                this.ageWithDefault = ageWithDefault;
+            }
+
+            @Override
+            public String toString() {
+                return "InnerConfig{" +
+                        "nameWithDefault='" + nameWithDefault + '\'' +
+                        ", ageWithDefault=" + ageWithDefault +
+                        '}';
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.heroslender.config.orm.common;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,12 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class ConfigurationLoader<T, C> {
-    @Getter private final Logger logger = Logger.getLogger(getClass().getSimpleName());
-    @Getter private final C config;
-    @Getter private final Runnable saveConfig;
-    @Getter private final Class<T> clazz;
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private final C config;
+    private final Runnable saveConfig;
+    private final Class<T> clazz;
 
-    protected ConfigurationLoader(@NotNull C config, @NotNull Runnable saveConfig, @NotNull Class<T> clazz) {
+    protected ConfigurationLoader(@NotNull C config, Runnable saveConfig, @NotNull Class<T> clazz) {
         this.config = config;
         this.saveConfig = saveConfig;
         this.clazz = clazz;
@@ -70,5 +69,21 @@ public abstract class ConfigurationLoader<T, C> {
         }
 
         return instance;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public C getConfig() {
+        return config;
+    }
+
+    public Runnable getSaveConfig() {
+        return saveConfig;
+    }
+
+    public Class<T> getClazz() {
+        return clazz;
     }
 }

@@ -14,4 +14,8 @@ public interface BukkitTypeAdapter<T> extends TypeAdapter<T> {
     }
 
     void saveDefault(ConfigurationSection configuration, String path, Object defaultValue);
+
+    default void saveDefault(ConfigurationSection configuration, String path, Object defaultValue, Field field) {
+        saveDefault(configuration, path, defaultValue);
+    }
 }

@@ -31,8 +31,7 @@ public class ListTypeAdapter implements BukkitTypeAdapter<List> {
 
     @Override
     public List get(ConfigurationSection configuration, String path) {
-        System.out.println("a");
-        return configuration.getStringList(path);
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @SuppressWarnings("unchecked")
@@ -53,8 +52,6 @@ public class ListTypeAdapter implements BukkitTypeAdapter<List> {
         }
         return list;
     }
-
-
 
     @Override
     public void saveDefault(ConfigurationSection configuration, String path, Object defaultValue) {
