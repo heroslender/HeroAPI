@@ -21,12 +21,12 @@ public class Test {
         YamlConfiguration config = new YamlConfiguration();
         config.load(configFile);
 
-        BukkitConfigurationLoader<Config> configurationLoader = new BukkitConfigurationLoader(config, () -> {
+        BukkitConfigurationLoader<Config> configurationLoader = new BukkitConfigurationLoader<>(config, () -> {
             try {
                 config.save(configFile);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }   
         }, Config.class);
 
         Config cfg = configurationLoader.load();

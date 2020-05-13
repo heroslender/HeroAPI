@@ -1,5 +1,6 @@
 package com.heroslender.config.orm.common;
 
+import com.heroslender.config.orm.common.adapter.exceptions.AdapterNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public abstract class ConfigurationLoader<T, C> {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final C config;
@@ -45,7 +47,7 @@ public abstract class ConfigurationLoader<T, C> {
         for (Field field : clazz.getDeclaredFields()) {
             try {
                 loadField(field, instance);
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | AdapterNotFoundException e) {
                 logger.log(Level.SEVERE, e, () -> "Failed to initialize the field " + field.getName());
             }
         }
@@ -58,10 +60,14 @@ public abstract class ConfigurationLoader<T, C> {
 
         final String configFieldName = field.getName();
 
-        setConfigValue(field, configFieldName, field.get(instance));
+        try {
+            setConfigValue(field, configFieldName, field.get(instance));
+        } catch (AdapterNotFoundException e) {
+            logger.log(Level.SEVERE, e, () -> "Failed to initialize the field " + field.getName());
+        }
     }
 
-    protected void loadField(@NotNull final Field field, @NotNull final Object instance) throws IllegalAccessException {
+    protected void loadField(@NotNull final Field field, @NotNull final Object instance) throws IllegalAccessException, AdapterNotFoundException {
         field.setAccessible(true);
 
         final String configFieldName = field.getName();
@@ -72,9 +78,9 @@ public abstract class ConfigurationLoader<T, C> {
         }
     }
 
-    public abstract Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue);
+    public abstract Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue) throws AdapterNotFoundException;
 
-    public abstract void setConfigValue(Field field, String valuePath, @Nullable Object value);
+    public abstract void setConfigValue(Field field, String valuePath, @Nullable Object value) throws AdapterNotFoundException;
 
     @Nullable
     protected T initClass(@NotNull Class<T> clazz) {
@@ -85,7 +91,7 @@ public abstract class ConfigurationLoader<T, C> {
             final Constructor<T> constructor = clazz.getConstructor();
             instance = constructor.newInstance();
         } catch (NoSuchMethodException e) {
-            getLogger().log(Level.SEVERE, e, () -> "Couln't find the default constructor for the class " + clazz.getSimpleName());
+            getLogger().log(Level.SEVERE, e, () -> "Couldn't find the default constructor for the class " + clazz.getSimpleName());
         } catch (IllegalAccessException | InstantiationException e) {
             getLogger().log(Level.SEVERE, e, () -> "Failed to initialize the class " + clazz.getSimpleName());
         } catch (InvocationTargetException e) {

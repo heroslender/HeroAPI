@@ -3,6 +3,7 @@ package com.heroslender.config.orm.bukkit;
 import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapter;
 import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapterFactory;
 import com.heroslender.config.orm.common.ConfigurationLoader;
+import com.heroslender.config.orm.common.adapter.exceptions.AdapterNotFoundException;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.logging.Level;
 
+@SuppressWarnings("unused")
 public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, ConfigurationSection> {
     private static final BukkitTypeAdapterFactory TYPE_ADAPTER_FACTORY = BukkitTypeAdapterFactory.INSTANCE;
 
@@ -57,11 +59,10 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     }
 
     @Override
-    public Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue) {
+    public Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue) throws AdapterNotFoundException {
         final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
         if (typeAdapter == null) {
-            System.out.println("No adapter found!");
-            return null;
+            throw new AdapterNotFoundException(field.getType());
         }
 
         if (!getConfig().isSet(valuePath)) {
@@ -76,11 +77,10 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     }
 
     @Override
-    public void setConfigValue(Field field, String valuePath, @Nullable Object value) {
+    public void setConfigValue(Field field, String valuePath, @Nullable Object value) throws AdapterNotFoundException {
         final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
         if (typeAdapter == null) {
-            System.out.println("No adapter found!");
-            return;
+            throw new AdapterNotFoundException(field.getType());
         }
 
         typeAdapter.save(getConfig(), valuePath, value, field.getGenericType());
