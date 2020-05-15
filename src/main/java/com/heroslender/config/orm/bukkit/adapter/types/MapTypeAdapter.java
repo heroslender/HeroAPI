@@ -1,8 +1,7 @@
 package com.heroslender.config.orm.bukkit.adapter.types;
 
+import com.heroslender.config.orm.bukkit.BukkitConfigurationLoader;
 import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapter;
-import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapterFactory;
-import com.heroslender.config.orm.common.adapter.TypeAdapter;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.ParameterizedType;
@@ -41,21 +40,13 @@ public class MapTypeAdapter implements BukkitTypeAdapter<Map> {
         Type valType = mapType.getActualTypeArguments()[1];
         Class<?> valueType = (Class<?>) valType;
 
-        TypeAdapter<?> KeyAdapter = BukkitTypeAdapterFactory.INSTANCE.getTypeAdapter(keyType);
-        if (KeyAdapter == null) {
-            System.out.println("No adapter found for " + keyType.getSimpleName());
-            return Collections.emptyMap();
-        }
-        BukkitTypeAdapter<?> valueAdapter = BukkitTypeAdapterFactory.INSTANCE.getTypeAdapter(valueType);
-        if (valueAdapter == null) {
-            System.out.println("No adapter found for " + valueType.getSimpleName());
-            return Collections.emptyMap();
-        }
+        BukkitTypeAdapter<?> keyAdapter = BukkitConfigurationLoader.TYPE_ADAPTER_FACTORY.getTypeAdapter(keyType);
+        BukkitTypeAdapter<?> valueAdapter = BukkitConfigurationLoader.TYPE_ADAPTER_FACTORY.getTypeAdapter(valueType);
 
         ConfigurationSection section = configurationSection.getConfigurationSection(path);
         Map map = new HashMap();
         for (String key : section.getKeys(false)) {
-            map.put(KeyAdapter.from(key), valueAdapter.get(section, key, valType));
+            map.put(keyAdapter.from(key), valueAdapter.get(section, key, valType));
         }
 
         return map;
@@ -82,11 +73,7 @@ public class MapTypeAdapter implements BukkitTypeAdapter<Map> {
 
         Type valType = ((ParameterizedType) type).getActualTypeArguments()[1];
         Class<?> valueType = (Class<?>) valType;
-        BukkitTypeAdapter<?> valueAdapter = BukkitTypeAdapterFactory.INSTANCE.getTypeAdapter(valueType);
-        if (valueAdapter == null) {
-            System.out.println("No adapter found for " + valueType.getSimpleName());
-            return;
-        }
+        BukkitTypeAdapter<?> valueAdapter = BukkitConfigurationLoader.TYPE_ADAPTER_FACTORY.getTypeAdapter(valueType);
 
         ConfigurationSection section = configuration.createSection(path);
         Map map = (Map) defaultValue;

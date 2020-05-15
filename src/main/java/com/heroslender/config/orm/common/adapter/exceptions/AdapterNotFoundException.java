@@ -1,7 +1,7 @@
 package com.heroslender.config.orm.common.adapter.exceptions;
 
 @SuppressWarnings("unused")
-public class AdapterNotFoundException extends Exception {
+public class AdapterNotFoundException extends RuntimeException {
     private final Class<?> clazz;
 
     public AdapterNotFoundException(Class<?> clazz) {

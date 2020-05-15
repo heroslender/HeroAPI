@@ -4,7 +4,6 @@ import com.heroslender.config.orm.bukkit.BukkitConfigurationLoader;
 import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapter;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
 

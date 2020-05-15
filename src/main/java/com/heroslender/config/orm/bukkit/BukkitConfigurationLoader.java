@@ -15,7 +15,7 @@ import java.util.logging.Level;
 
 @SuppressWarnings("unused")
 public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, ConfigurationSection> {
-    private static final BukkitTypeAdapterFactory TYPE_ADAPTER_FACTORY = BukkitTypeAdapterFactory.INSTANCE;
+    public static final BukkitTypeAdapterFactory TYPE_ADAPTER_FACTORY = BukkitTypeAdapterFactory.getInstance();
 
     public BukkitConfigurationLoader(@NotNull ConfigurationSection config, Runnable saveConfig, @NotNull Class<T> clazz) {
         super(config, saveConfig, clazz);
@@ -61,9 +61,6 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     @Override
     public Object getConfigValue(Field field, String valuePath, @Nullable Object defaultValue) throws AdapterNotFoundException {
         final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
-        if (typeAdapter == null) {
-            throw new AdapterNotFoundException(field.getType());
-        }
 
         if (!getConfig().isSet(valuePath)) {
             getLogger().log(Level.INFO, "The field {0} is not present in the config, creating it.", valuePath);
@@ -79,9 +76,6 @@ public class BukkitConfigurationLoader<T> extends ConfigurationLoader<T, Configu
     @Override
     public void setConfigValue(Field field, String valuePath, @Nullable Object value) throws AdapterNotFoundException {
         final BukkitTypeAdapter<?> typeAdapter = TYPE_ADAPTER_FACTORY.getTypeAdapter(field.getType());
-        if (typeAdapter == null) {
-            throw new AdapterNotFoundException(field.getType());
-        }
 
         typeAdapter.save(getConfig(), valuePath, value, field.getGenericType());
     }

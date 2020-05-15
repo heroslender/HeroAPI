@@ -1,11 +1,10 @@
 package com.heroslender.config.orm.bukkit.adapter.types;
 
+import com.heroslender.config.orm.bukkit.BukkitConfigurationLoader;
 import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapter;
-import com.heroslender.config.orm.bukkit.adapter.BukkitTypeAdapterFactory;
 import com.heroslender.config.orm.common.adapter.TypeAdapter;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -44,12 +43,7 @@ public class ListTypeAdapter implements BukkitTypeAdapter<List> {
 
         ParameterizedType stringListType = (ParameterizedType) type;
         Class<?> entryType = (Class<?>) stringListType.getActualTypeArguments()[0];
-
-        TypeAdapter<?> adapter = BukkitTypeAdapterFactory.INSTANCE.getTypeAdapter(entryType);
-        if (adapter == null) {
-            System.out.println("No adapter found for " + entryType.getSimpleName());
-            return Collections.emptyList();
-        }
+        TypeAdapter<?> adapter = BukkitConfigurationLoader.TYPE_ADAPTER_FACTORY.getTypeAdapter(entryType);
 
         List list = new ArrayList();
         for (String s : configurationSection.getStringList(path)) {
