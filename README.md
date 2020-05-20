@@ -35,3 +35,23 @@ Uso:
 ```Java
 new MenuExemplo().open(player);
 ```
+
+### Maven
+
+```xml
+<repositories>
+    <repository>
+        <id>heroslender-repo</id>
+        <url>https://nexus.heroslender.com/repository/maven-public/</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.heroslender</groupId>
+        <artifactId>HeroAPI</artifactId>
+        <version>1.0</version>
+        <scope>compile</scope>
+    </dependency>
+</dependencies>
+```
