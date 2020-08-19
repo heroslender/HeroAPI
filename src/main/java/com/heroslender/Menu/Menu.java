@@ -11,10 +11,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Menu {
     private final String name;
     private final MenuItem[] items;
+
+    static {
+        register(JavaPlugin.getProvidingPlugin(Menu.class));
+    }
 
     /**
      * Create a new menu
