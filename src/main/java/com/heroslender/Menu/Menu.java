@@ -14,7 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 public class Menu {
     private final String name;
-    private MenuItem[] items;
+    private final MenuItem[] items;
 
     /**
      * Create a new menu
@@ -134,11 +134,11 @@ public class Menu {
         void onClick(InventoryClickEvent e);
     }
 
-    public class MenuItem {
+    public static class MenuItem {
         private final ItemStack icon;
         private final MenuItemClick itemClick;
 
-        MenuItem(ItemStack icon, MenuItemClick itemClick) {
+        public MenuItem(ItemStack icon, MenuItemClick itemClick) {
             this.icon = icon;
             this.itemClick = itemClick;
         }
@@ -148,20 +148,20 @@ public class Menu {
                 itemClick.onClick(e);
         }
 
-        ItemStack getIcon() {
+        public ItemStack getIcon() {
             return icon;
         }
     }
 
-    private class MenuHolder implements InventoryHolder {
+    public static class MenuHolder implements InventoryHolder {
         private final Menu menu;
         private Inventory inventory;
 
-        MenuHolder(Menu menu) {
+        public MenuHolder(Menu menu) {
             this.menu = menu;
         }
 
-        Menu getMenu() {
+        public Menu getMenu() {
             return menu;
         }
 
@@ -169,7 +169,7 @@ public class Menu {
             return this.inventory;
         }
 
-        void setInventory(Inventory inventory) {
+        public void setInventory(Inventory inventory) {
             this.inventory = inventory;
         }
     }
