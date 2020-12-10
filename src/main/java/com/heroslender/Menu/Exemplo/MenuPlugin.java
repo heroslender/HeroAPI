@@ -11,12 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 class MenuPlugin extends JavaPlugin {
 
     @Override
-    public void onEnable() {
-        // Registar o Listener do menu - IMPORTANTE
-        Menu.register(this);
-    }
-
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) return false;
         Player player = (Player) sender;
