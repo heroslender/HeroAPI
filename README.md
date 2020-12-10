@@ -73,7 +73,7 @@ new MenuExemplo().open(player);
     <dependency>
         <groupId>com.heroslender</groupId>
         <artifactId>HeroAPI</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
