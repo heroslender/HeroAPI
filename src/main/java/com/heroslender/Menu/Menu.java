@@ -64,8 +64,8 @@ public class Menu {
      * @param slot      The slot to display the item
      * @param itemStack The item to display
      */
-    public void setItem(int slot, ItemStack itemStack) {
-        setItem(slot, itemStack, null);
+    public Menu setItem(int slot, ItemStack itemStack) {
+        return setItem(slot, itemStack, null);
     }
 
     /**
@@ -75,8 +75,8 @@ public class Menu {
      * @param itemStack The item to display
      * @param itemClick The callback when the player clicks the inventory
      */
-    public void setItem(int slot, ItemStack itemStack, MenuItemClick itemClick) {
-        setItem(slot, new MenuItem(itemStack, itemClick));
+    public Menu setItem(int slot, ItemStack itemStack, MenuItemClick itemClick) {
+        return setItem(slot, new MenuItem(itemStack, itemClick));
     }
 
     /**
@@ -85,8 +85,9 @@ public class Menu {
      * @param slot     The slot to display the item
      * @param menuItem The item to display
      */
-    public void setItem(int slot, MenuItem menuItem) {
+    public Menu setItem(int slot, MenuItem menuItem) {
         items[slot] = menuItem;
+        return this;
     }
 
     /**
@@ -94,7 +95,7 @@ public class Menu {
      *
      * @param humanEntity A bit obvious right?
      */
-    public void open(HumanEntity humanEntity) {
+    public Menu open(HumanEntity humanEntity) {
         MenuHolder holder = new MenuHolder(this);
         Inventory inventory = Bukkit.createInventory(holder, items.length, name);
         holder.setInventory(inventory);
@@ -107,6 +108,8 @@ public class Menu {
         }
 
         humanEntity.openInventory(inventory);
+
+        return this;
     }
 
     private void inventoryClick(InventoryClickEvent e) {
