@@ -1,5 +1,6 @@
 package com.heroslender.Menu;
 
+import com.heroslender.exceptions.inventory.InvalidInventorySizeException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -14,8 +15,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Menu {
-    private final String name;
-    private final MenuItem[] items;
+    protected final String name;
+    protected final MenuItem[] items;
 
     static {
         register(JavaPlugin.getProvidingPlugin(Menu.class));
@@ -28,6 +29,8 @@ public class Menu {
      * @param size Inventory size
      */
     public Menu(String name, int size) {
+        if (size % 9 != 0) throw new InvalidInventorySizeException(size);
+
         this.name = name;
         items = new MenuItem[size];
     }
@@ -39,8 +42,7 @@ public class Menu {
      * @param size Inventory size
      */
     public Menu(String name, MenuSize size) {
-        this.name = name;
-        items = new MenuItem[size.getSlots()];
+        this(name, size.getSlots());
     }
 
     /**
@@ -108,7 +110,6 @@ public class Menu {
         }
 
         humanEntity.openInventory(inventory);
-
         return this;
     }
 
