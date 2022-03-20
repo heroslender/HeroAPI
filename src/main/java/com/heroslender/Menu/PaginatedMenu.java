@@ -1,4 +1,4 @@
-package com.heroslender.Menu;
+package com.heroslender.menu;
 
 import com.heroslender.exceptions.inventory.ItemNotDefinedException;
 import com.heroslender.exceptions.inventory.PageGreaterThanMaxPageException;
@@ -51,14 +51,14 @@ public class PaginatedMenu<T> extends Menu {
     }
 
     /**
-     * Open the menu to some {@link org.bukkit.entity.HumanEntity} in specific page, it can be a {@link Player}<br/><br/>
+     * Open the menu to some {@link org.bukkit.entity.HumanEntity} in specific page, it can be a {@link Player}<br><br>
      * <p>
      * This method can throw {@link ItemNotDefinedException} if you not define the previous or next page items,
-     * and {@link PageGreaterThanMaxPageException} if you use a page greater than the max page<br/><br/>
+     * and {@link PageGreaterThanMaxPageException} if you use a page greater than the max page<br><br>
      * <p>
      * How the max page is calculated?
      * Assuming that we know the size of entries to be shown in this inventory (the data you used),
-     * we can calculate it using {@code Math.ceil(data.size() / (inventorySize - 2f))}.<br/>
+     * we can calculate it using {@code Math.ceil(data.size() / (inventorySize - 2f))}.<br>
      * The {@code -2f} is because we have the previous and next page items, so it occupy 2 slots in inventory
      *
      * @param humanEntity A bit obvious right?

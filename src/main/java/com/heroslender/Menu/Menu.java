@@ -1,4 +1,4 @@
-package com.heroslender.Menu;
+package com.heroslender.menu;
 
 import com.heroslender.exceptions.inventory.InvalidInventorySizeException;
 import org.bukkit.Bukkit;

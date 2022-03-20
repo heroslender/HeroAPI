@@ -1,8 +1,8 @@
-package com.heroslender.Menu.Exemplo;
+package com.heroslender.menu.exemplo;
 
 import com.heroslender.ItemStack.HItem;
-import com.heroslender.Menu.Menu;
-import com.heroslender.Menu.PaginatedMenu;
+import com.heroslender.menu.Menu;
+import com.heroslender.menu.PaginatedMenu;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.command.Command;

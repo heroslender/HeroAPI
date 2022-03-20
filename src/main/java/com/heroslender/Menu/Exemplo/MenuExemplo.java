@@ -1,6 +1,6 @@
-package com.heroslender.Menu.Exemplo;
+package com.heroslender.menu.exemplo;
 
-import com.heroslender.Menu.Menu;
+import com.heroslender.menu.Menu;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
