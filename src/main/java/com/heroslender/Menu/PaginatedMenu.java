@@ -3,7 +3,6 @@ package com.heroslender.menu;
 import com.heroslender.exceptions.inventory.ItemNotDefinedException;
 import com.heroslender.exceptions.inventory.PageGreaterThanMaxPageException;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -11,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.function.Function;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class PaginatedMenu<T> extends Menu {
 
     private final List<T> inventoryData;
@@ -45,13 +45,8 @@ public class PaginatedMenu<T> extends Menu {
         this(name, size.getSlots(), inventoryData, transformFunction, size.getSlots() - 9, size.getSlots() - 1);
     }
 
-    @Override
-    public Menu open(HumanEntity humanEntity) {
-        return open(humanEntity, 1);
-    }
-
     /**
-     * Open the menu to some {@link org.bukkit.entity.HumanEntity} in specific page, it can be a {@link Player}<br><br>
+     * Open the menu to some {@link Player} in page 1<br><br>
      * <p>
      * This method can throw {@link ItemNotDefinedException} if you not define the previous or next page items,
      * and {@link PageGreaterThanMaxPageException} if you use a page greater than the max page<br><br>
@@ -61,11 +56,30 @@ public class PaginatedMenu<T> extends Menu {
      * we can calculate it using {@code Math.ceil(data.size() / (inventorySize - 2f))}.<br>
      * The {@code -2f} is because we have the previous and next page items, so it occupy 2 slots in inventory
      *
-     * @param humanEntity A bit obvious right?
-     * @param page        the page to show
+     * @param player The player to open the menu to
      * @return the current menu
      */
-    public PaginatedMenu<T> open(HumanEntity humanEntity, int page) {
+    @Override
+    public Menu open(Player player) {
+        return open(player, 1);
+    }
+
+    /**
+     * Open the menu to some {@link Player} in specific page<br><br>
+     * <p>
+     * This method can throw {@link ItemNotDefinedException} if you not define the previous or next page items,
+     * and {@link PageGreaterThanMaxPageException} if you use a page greater than the max page<br><br>
+     * <p>
+     * How the max page is calculated?
+     * Assuming that we know the size of entries to be shown in this inventory (the data you used),
+     * we can calculate it using {@code Math.ceil(data.size() / (inventorySize - 2f))}.<br>
+     * The {@code -2f} is because we have the previous and next page items, so it occupy 2 slots in inventory
+     *
+     * @param player The player to open the menu to
+     * @param page   The page to show
+     * @return the current menu
+     */
+    public PaginatedMenu<T> open(Player player, int page) {
         if (items[previousPageSlot] == null)
             throw new ItemNotDefinedException("Você não definiu o item de voltar a página");
         if (items[nextPageSlot] == null)
@@ -75,7 +89,7 @@ public class PaginatedMenu<T> extends Menu {
 
         this.currentPage = page;
 
-        MenuHolder holder = new MenuHolder(this);
+        MenuHolder holder = new MenuHolder();
         Inventory inventory = Bukkit.createInventory(
                 holder,
                 items.length,
@@ -94,7 +108,7 @@ public class PaginatedMenu<T> extends Menu {
             inventory.setItem(inventorySlot++, transformFunction.apply(t));
         }
 
-        humanEntity.openInventory(inventory);
+        player.openInventory(inventory);
 
         return this;
     }

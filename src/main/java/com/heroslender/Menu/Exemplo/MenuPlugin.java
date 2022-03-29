@@ -81,4 +81,30 @@ class MenuPlugin extends JavaPlugin {
         // Abrir o menu para o Player
         menu.open(player, page);
     }
+
+    static class MyHolder extends Menu.MenuHolder {
+        int count = 0;
+    }
+
+    public void abrirMenuComCustomHolder(Player player) {
+        // Inicializar o menu
+        Menu menu = new Menu("Menu exemplo 2", Menu.MenuSize.THREE_LINES);
+
+        // Definir o conteudo
+        menu.setItem(11, new ItemStack(Material.BEDROCK), menuClick -> menuClick.getWhoClicked().sendMessage("Clicas-te na Bedrock!"));
+        menu.setItem(13, new ItemStack(Material.DIAMOND));
+        menu.setItem(15, new ItemStack(Material.APPLE), menuClick -> {
+            MyHolder holder = (MyHolder) menuClick.getHolder();
+            menuClick.getWhoClicked().sendMessage("Clicas-te na maça " + holder.count + " vezes!");
+
+            holder.count++;
+
+            menuClick.getWhoClicked().closeInventory();
+            menuClick.getWhoClicked().getInventory().addItem(new ItemStack(Material.APPLE));
+        });
+
+
+        // Abrir o menu para o Player
+        menu.open(player, new MyHolder());
+    }
 }
